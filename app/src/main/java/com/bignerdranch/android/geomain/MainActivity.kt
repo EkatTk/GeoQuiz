@@ -1,5 +1,6 @@
 package com.bignerdranch.android.geomain
 
+import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -19,12 +20,14 @@ class MainActivity : AppCompatActivity() {
     private lateinit var falseButton: Button
     private lateinit var nextButton: ImageButton
     private lateinit var backButton: ImageButton
+    private lateinit var cheatButton: Button
     private lateinit var questionTextView: TextView
 
     private val quizViewModel: QuizViewModel by lazy {
         ViewModelProviders.of(this).get(QuizViewModel::class.java)
     }
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "onCreate(Bundle?) called")
@@ -38,6 +41,8 @@ class MainActivity : AppCompatActivity() {
         falseButton = findViewById(R.id.false_button)
         nextButton = findViewById(R.id.next_button)
         backButton = findViewById(R.id.back_button)
+        cheatButton = findViewById(R.id.cheat_button)
+
         questionTextView = findViewById(R.id.question_text_view)
 
         trueButton.setOnClickListener { view: View ->
@@ -64,6 +69,10 @@ class MainActivity : AppCompatActivity() {
             updateQuestion()
             trueButton.isEnabled = true
             falseButton.isEnabled = true
+        }
+
+        cheatButton.setOnClickListener {
+        // Начало CheatActivity
         }
 
         updateQuestion()
