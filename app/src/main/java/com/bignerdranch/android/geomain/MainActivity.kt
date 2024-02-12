@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProviders
 
 private const val TAG = "MainActivity"
 private const val KEY_INDEX = "index"
+private const val KEY_INDEX2 = "isCheat"
 private const val REQUEST_CODE_CHEAT = 0
 class MainActivity : AppCompatActivity() {
 
@@ -122,6 +123,7 @@ class MainActivity : AppCompatActivity() {
         super.onSaveInstanceState(savedInstanceState)
         Log.i(TAG, "onSaveInstanceState")
         savedInstanceState.putInt(KEY_INDEX, quizViewModel.currentIndex)
+        savedInstanceState.putBoolean(KEY_INDEX2, quizViewModel.isCheater)
     }
 
     override fun onStop() {
