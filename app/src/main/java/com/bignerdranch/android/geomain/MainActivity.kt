@@ -11,6 +11,8 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 
 private const val TAG = "MainActivity"
 class MainActivity : AppCompatActivity() {
@@ -20,25 +22,14 @@ class MainActivity : AppCompatActivity() {
     private lateinit var nextButton: Button
     private lateinit var questionTextView: TextView
 
-    private val questionBank = listOf(
-        Question(R.string.question_australia, true),
-        Question(R.string.question_oceans, true),
-        Question(R.string.question_mideast, false),
-        Question(R.string.question_africa, false),
-        Question(R.string.question_americas, true),
-        Question(R.string.question_asia, true)
-    )
-    private var currentIndex = 0
-    private var correctChek = 0
+    private val quizViewModel: QuizViewModel by
+    lazy {
+        ViewModelProviders.of(this)[QuizViewModel::class.java]
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         Log.d(TAG, "onCreate(Bundle?) called")
-
-        if (savedInstanceState != null) {
-            currentIndex = savedInstanceState.getInt("saveIndex", 0)
-            correctChek = savedInstanceState.getInt("saveAnswer", 0)
-        }
 
         setContentView(R.layout.activity_main)
 
@@ -59,7 +50,7 @@ class MainActivity : AppCompatActivity() {
         questionTextView = findViewById(R.id.question_text_view)
 
         nextButton.setOnClickListener {
-            currentIndex = (currentIndex + 1) % questionBank.size
+            quizViewModel.moveToNext()
             updateQuestion()
         }
         updateQuestion()
@@ -87,7 +78,7 @@ class MainActivity : AppCompatActivity() {
         Log.d(TAG, "onDestroy() called")
     }
     private fun updateQuestion() {
-        val questionTextResId = questionBank[currentIndex].textResId
+        val questionTextResId = quizViewModel.currentQuestionText
         questionTextView.setText(questionTextResId)
         nextButton.isEnabled = false
         trueButton.isEnabled = true
@@ -96,9 +87,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkAnswer(userAnswer: Boolean) {
         nextButton.isEnabled = true
-        val correctAnswer = questionBank[currentIndex].answer
+        val correctAnswer = quizViewModel.currentQuestionAnswer
         val messageResId = if (userAnswer == correctAnswer) {
-            correctChek++
+            quizViewModel.correctUpdate()
             R.string.correct_toast
         } else {
             R.string.incorrect_toast
@@ -110,9 +101,10 @@ class MainActivity : AppCompatActivity() {
             }
         trueButton.isEnabled = false
         falseButton.isEnabled = false
-        if (currentIndex == questionBank.size-1){
+
+        if (quizViewModel.currentIndex == quizViewModel.questionBank.size-1){
             nextButton.isEnabled = false
-            showCustomDialog(correctChek.toString())
+            showCustomDialog(quizViewModel.correctChek.toString())
         }
     }
     private fun showCustomDialog(data: String) {
@@ -123,16 +115,11 @@ class MainActivity : AppCompatActivity() {
         myDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         myDialog.show()
         val resultText = myDialog.findViewById<TextView>(R.id.result_text)
-        val str = "You answered " + data + " out of " + questionBank.size + " questions correctly"
+        val str = "You answered " + data + " out of " + quizViewModel.questionBank.size + " questions correctly"
         resultText.text = str
         val okButton = dialogBinding.findViewById<Button>(R.id.ok_button)
         okButton.setOnClickListener {
             myDialog.dismiss()
         }
-    }
-    override fun onSaveInstanceState(savedInstanceState: Bundle) {
-        super.onSaveInstanceState(savedInstanceState)
-        Log.d(TAG,"onSaveInstanceState() called")
-        savedInstanceState.putInt("saveIndex", currentIndex)
     }
 }
