@@ -83,6 +83,8 @@ class MainActivity : AppCompatActivity() {
     private fun updateQuestion() {
         val questionTextResId = questionBank[currentIndex].textResId
         questionTextView.setText(questionTextResId)
+        trueButton.isEnabled = true
+        falseButton.isEnabled = true
     }
 
     private fun checkAnswer(userAnswer: Boolean) {
@@ -97,6 +99,8 @@ class MainActivity : AppCompatActivity() {
                 setGravity(Gravity.TOP, 0, 100)
                 show()
             }
+        trueButton.isEnabled = false
+        falseButton.isEnabled = false
     }
     override fun onSaveInstanceState(savedInstanceState: Bundle) {
         super.onSaveInstanceState(savedInstanceState)
