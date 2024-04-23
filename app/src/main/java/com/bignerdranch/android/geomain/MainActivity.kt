@@ -1,3 +1,4 @@
+@file:Suppress("DEPRECATION")
 package com.bignerdranch.android.geomain
 
 import android.app.Activity
@@ -91,6 +92,7 @@ class MainActivity : AppCompatActivity() {
         updateQuestion()
 
     }
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
     {
         super.onActivityResult(requestCode, resultCode, data)
