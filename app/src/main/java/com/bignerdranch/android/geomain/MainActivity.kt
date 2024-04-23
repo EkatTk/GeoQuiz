@@ -22,6 +22,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var trueButton: Button
     private lateinit var falseButton: Button
     private lateinit var nextButton: Button
+    private lateinit var cheatButton: Button
     private lateinit var questionTextView: TextView
 
     private val quizViewModel: QuizViewModel by
@@ -54,11 +55,16 @@ class MainActivity : AppCompatActivity() {
 
         nextButton = findViewById(R.id.next_button)
         nextButton.isEnabled = false
+
+        cheatButton = findViewById(R.id.cheat_button)
+
         questionTextView = findViewById(R.id.question_text_view)
 
         nextButton.setOnClickListener {
             quizViewModel.moveToNext()
             updateQuestion()
+        }
+        cheatButton.setOnClickListener {
         }
         updateQuestion()
 
