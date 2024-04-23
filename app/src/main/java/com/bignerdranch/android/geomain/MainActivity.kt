@@ -101,6 +101,9 @@ class MainActivity : AppCompatActivity() {
             }
         trueButton.isEnabled = false
         falseButton.isEnabled = false
+        if (currentIndex == questionBank.size-1){
+            nextButton.visibility = View.INVISIBLE
+        }
     }
     override fun onSaveInstanceState(savedInstanceState: Bundle) {
         super.onSaveInstanceState(savedInstanceState)
