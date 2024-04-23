@@ -1,6 +1,8 @@
 package com.bignerdranch.android.geomain
 
+import android.app.Activity
 import android.app.Dialog
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
@@ -17,6 +19,7 @@ import androidx.lifecycle.ViewModelProviders
 private const val TAG = "MainActivity"
 private const val KEY_INDEX1 = "currentIndex"
 private const val KEY_INDEX2 = "correctChek"
+private const val REQUEST_CODE_CHEAT = 0
 class MainActivity : AppCompatActivity() {
 
     private lateinit var trueButton: Button
@@ -67,10 +70,21 @@ class MainActivity : AppCompatActivity() {
         cheatButton.setOnClickListener {
             val answerIsTrue = quizViewModel.currentQuestionAnswer
             val intent = CheatActivity.newIntent(this@MainActivity, answerIsTrue)
-            startActivity(intent)
+            startActivityForResult(intent, REQUEST_CODE_CHEAT)
         }
         updateQuestion()
 
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
+    {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode != Activity.RESULT_OK) {
+            return
+        }
+        if (requestCode == REQUEST_CODE_CHEAT)
+        {
+            quizViewModel.isCheater = data?.getBooleanExtra(EXTRA_ANSWER_SHOWN, false) ?: false
+        }
     }
 
     override fun onStart() {
@@ -107,16 +121,19 @@ class MainActivity : AppCompatActivity() {
         nextButton.isEnabled = false
         trueButton.isEnabled = true
         falseButton.isEnabled = true
+        cheatButton.visibility = View.VISIBLE
+        quizViewModel.isCheater = false
     }
 
     private fun checkAnswer(userAnswer: Boolean) {
         nextButton.isEnabled = true
         val correctAnswer = quizViewModel.currentQuestionAnswer
-        val messageResId = if (userAnswer == correctAnswer) {
-            quizViewModel.correctUpdate()
-            R.string.correct_toast
-        } else {
-            R.string.incorrect_toast
+        val messageResId = when {quizViewModel.isCheater -> R.string.judgment_toast
+            userAnswer == correctAnswer -> {
+                quizViewModel.correctUpdate()
+                R.string.correct_toast
+            }
+            else -> R.string.incorrect_toast
         }
         Toast.makeText(this, messageResId, Toast.LENGTH_SHORT)
             .apply {
@@ -125,6 +142,7 @@ class MainActivity : AppCompatActivity() {
             }
         trueButton.isEnabled = false
         falseButton.isEnabled = false
+        cheatButton.isEnabled = false
 
         if (quizViewModel.currentIndex == quizViewModel.questionBank.size-1){
             nextButton.isEnabled = false
