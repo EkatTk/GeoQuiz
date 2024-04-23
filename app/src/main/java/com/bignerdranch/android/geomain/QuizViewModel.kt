@@ -7,6 +7,7 @@ private const val TAG = "QuizViewModel"
 class QuizViewModel : ViewModel() {
     var currentIndex = 0
     var correctChek = 0
+    var currentCheater = 0
     var isCheater = false
     val questionBank = listOf(
         Question(R.string.question_australia, true),
@@ -24,5 +25,9 @@ class QuizViewModel : ViewModel() {
     fun correctUpdate()
     {
         correctChek++
+    }
+    fun cheaterUpdate()
+    {
+        currentCheater++
     }
 }

@@ -5,7 +5,6 @@ import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -13,13 +12,14 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
-import androidx.lifecycle.ViewModelProvider
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
 
 private const val TAG = "MainActivity"
 private const val KEY_INDEX1 = "currentIndex"
 private const val KEY_INDEX2 = "correctChek"
 private const val KEY_INDEX3 = "isCheat"
+private const val KEY_INDEX4 = "currentCheater"
 private const val REQUEST_CODE_CHEAT = 0
 class MainActivity : AppCompatActivity() {
 
@@ -69,9 +69,14 @@ class MainActivity : AppCompatActivity() {
             updateQuestion()
         }
         cheatButton.setOnClickListener {
-            val answerIsTrue = quizViewModel.currentQuestionAnswer
-            val intent = CheatActivity.newIntent(this@MainActivity, answerIsTrue)
-            startActivityForResult(intent, REQUEST_CODE_CHEAT)
+            if (quizViewModel.currentCheater < 3)
+            {
+                val answerIsTrue = quizViewModel.currentQuestionAnswer
+                val intent = CheatActivity.newIntent(this@MainActivity, answerIsTrue)
+                startActivityForResult(intent, REQUEST_CODE_CHEAT)
+                quizViewModel.cheaterUpdate()
+            }
+            R.string.judgment_toast
         }
         updateQuestion()
 
@@ -108,6 +113,7 @@ class MainActivity : AppCompatActivity() {
         savedInstanceState.putInt(KEY_INDEX1, quizViewModel.currentIndex)
         savedInstanceState.putInt(KEY_INDEX2, quizViewModel.correctChek)
         savedInstanceState.putBoolean(KEY_INDEX3, quizViewModel.isCheater)
+        savedInstanceState.putInt(KEY_INDEX4, quizViewModel.currentCheater)
     }
     override fun onStop() {
         super.onStop()
@@ -123,25 +129,25 @@ class MainActivity : AppCompatActivity() {
         nextButton.isEnabled = false
         trueButton.isEnabled = true
         falseButton.isEnabled = true
-        cheatButton.isEnabled = true
+        if (quizViewModel.currentCheater < 3)
+            cheatButton.isEnabled = true
         quizViewModel.isCheater = false
     }
 
     private fun checkAnswer(userAnswer: Boolean) {
         nextButton.isEnabled = true
         val correctAnswer = quizViewModel.currentQuestionAnswer
-        val messageResId = when {quizViewModel.isCheater -> R.string.judgment_toast
-            userAnswer == correctAnswer -> {
-                quizViewModel.correctUpdate()
-                R.string.correct_toast
-            }
-            else -> R.string.incorrect_toast
+        val messageResId = if (userAnswer == correctAnswer)
+        {
+            quizViewModel.correctUpdate()
+            R.string.correct_toast
         }
-        Toast.makeText(this, messageResId, Toast.LENGTH_SHORT)
-            .apply {
-                setGravity(Gravity.TOP, 0, 100)
-                show()
-            }
+        else
+            R.string.incorrect_toast
+
+        val toast = Toast.makeText(this, messageResId, Toast.LENGTH_SHORT)
+        toast.setGravity(Gravity.TOP, 0, 100)
+        toast.show()
         trueButton.isEnabled = false
         falseButton.isEnabled = false
         cheatButton.isEnabled = false
