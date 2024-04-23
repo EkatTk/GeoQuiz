@@ -15,6 +15,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 
 private const val TAG = "MainActivity"
+private const val KEY_INDEX1 = "currentIndex"
+private const val KEY_INDEX2 = "correctChek"
 class MainActivity : AppCompatActivity() {
 
     private lateinit var trueButton: Button
@@ -32,6 +34,11 @@ class MainActivity : AppCompatActivity() {
         Log.d(TAG, "onCreate(Bundle?) called")
 
         setContentView(R.layout.activity_main)
+
+        val currentIndex = savedInstanceState?.getInt(KEY_INDEX1, 0) ?: 0
+        quizViewModel.currentIndex = currentIndex
+        val correctChek = savedInstanceState?.getInt(KEY_INDEX2, 0) ?: 0
+        quizViewModel.correctChek = correctChek
 
         trueButton = findViewById(R.id.true_button)
 
@@ -68,6 +75,14 @@ class MainActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         Log.d(TAG, "onPause() called")
+    }
+    override fun
+            onSaveInstanceState(savedInstanceState: Bundle)
+    {
+        super.onSaveInstanceState(savedInstanceState)
+        Log.i(TAG, "onSaveInstanceState")
+        savedInstanceState.putInt(KEY_INDEX1, quizViewModel.currentIndex)
+        savedInstanceState.putInt(KEY_INDEX2, quizViewModel.correctChek)
     }
     override fun onStop() {
         super.onStop()
