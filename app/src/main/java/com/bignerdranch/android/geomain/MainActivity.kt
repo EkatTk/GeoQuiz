@@ -31,6 +31,10 @@ class MainActivity : AppCompatActivity() {
 
         Log.d(TAG, "onCreate(Bundle?) called")
 
+        if (savedInstanceState != null) {
+            currentIndex = savedInstanceState.getInt("saveIndex", 0)
+        }
+
         setContentView(R.layout.activity_main)
 
         trueButton = findViewById(R.id.true_button)
@@ -58,28 +62,23 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        Log.d(TAG,
-            "onStart() called")
+        Log.d(TAG, "onStart() called")
     }
     override fun onResume() {
         super.onResume()
-        Log.d(TAG,
-            "onResume() called")
+        Log.d(TAG, "onResume() called")
     }
     override fun onPause() {
         super.onPause()
-        Log.d(TAG,
-            "onPause() called")
+        Log.d(TAG, "onPause() called")
     }
     override fun onStop() {
         super.onStop()
-        Log.d(TAG,
-            "onStop() called")
+        Log.d(TAG, "onStop() called")
     }
     override fun onDestroy() {
         super.onDestroy()
-        Log.d(TAG,
-            "onDestroy() called")
+        Log.d(TAG, "onDestroy() called")
     }
     private fun updateQuestion() {
         val questionTextResId = questionBank[currentIndex].textResId
@@ -98,5 +97,10 @@ class MainActivity : AppCompatActivity() {
                 setGravity(Gravity.TOP, 0, 100)
                 show()
             }
+    }
+    override fun onSaveInstanceState(savedInstanceState: Bundle) {
+        super.onSaveInstanceState(savedInstanceState)
+        Log.d(TAG,"onSaveInstanceState() called")
+        savedInstanceState.putInt("saveIndex", currentIndex)
     }
 }
