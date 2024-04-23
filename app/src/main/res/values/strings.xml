@@ -13,8 +13,7 @@
     <string name="ok_button">Ok</string>
     <string name="correct_toast">Correct!</string>
     <string name="incorrect_toast">Incorrect!</string>
-    <string name="warning_text">Are you sure you want to do this?</string>
-    <string name="show_answer_button">Show Answer</string>
+    <string name="back">Back</string>
     <string name="cheat_button">Cheat!</string>
-    <string name="judgment_toast">You have used all the hints.</string>
+    <string name="judgment_toast">You have used all the hints!</string>
 </resources>
